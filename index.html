@@ -2,22 +2,18 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>ความรักของสองเรา</title>
+<title>In-My-Love</title>
 
 <style>
     body {
         margin: 0;
         background: linear-gradient(135deg, #ff9a9e, #fad0c4);
         font-family: sans-serif;
-
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-
         min-height: 100vh;
         text-align: center;
         overflow: hidden;
@@ -28,15 +24,8 @@
         max-width: 200px;
     }
 
-    h1 {
-        font-size: 6vw;
-        margin: 10px 0;
-    }
-
-    p {
-        font-size: 5vw;
-        margin: 10px 0;
-    }
+    h1 { font-size: 6vw; margin: 10px 0; }
+    p  { font-size: 5vw; margin: 10px 0; }
 
     button {
         padding: 12px 25px;
@@ -48,15 +37,8 @@
         transition: 0.3s;
     }
 
-    #yes {
-        background-color: #ff4d6d;
-        color: white;
-    }
-
-    #no {
-        background-color: #444;
-        color: white;
-    }
+    #yes { background-color: #ff4d6d; color: white; }
+    #no  { background-color: #444;    color: white; }
 
     .ultimateYes {
         background: linear-gradient(45deg, #ff0066, #ff4d6d, #ff85a2);
@@ -65,60 +47,154 @@
         justify-content: center;
         align-items: center;
         animation: pulse 0.8s infinite alternate;
-        text-shadow: 0 0 10px white, 
-                     0 0 20px #ff4d6d, 
-                     0 0 40px #ff0066;
+        text-shadow: 0 0 10px white, 0 0 20px #ff4d6d, 0 0 40px #ff0066;
     }
 
     @keyframes pulse {
         from { transform: scale(1); }
-        to { transform: scale(1.05); }
+        to   { transform: scale(1.05); }
+    }
+
+    /* ── yes page ── */
+    #yes-page {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        width: 100%;
+        position: relative;
+        z-index: 10;
+    }
+
+    #yes-page img {
+        width: min(280px, 60vw);
+        
+        box-shadow: 0 0 60px rgba(255,100,150,0.5);
+        animation: popIn 0.6s cubic-bezier(0.175,0.885,0.32,1.275) forwards;
+    }
+
+    #yes-page h1 {
+        font-size: clamp(1.2rem, 4vw, 2.2rem);
+        color: #c0154f;
+        text-shadow: 0 2px 10px rgba(192,21,79,0.3);
+        margin-top: 24px;
+        animation: fadeUp 0.8s ease 0.3s both;
+    }
+
+    @keyframes popIn {
+        from { transform: scale(0); opacity: 0; }
+        to   { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes fadeUp {
+        from { transform: translateY(30px); opacity: 0; }
+        to   { transform: translateY(0);    opacity: 1; }
+    }
+
+    /* ── floating hearts ── */
+    .heart-container {
+        position: fixed;
+        bottom: 0; left: 0;
+        width: 100%; height: 100%;
+        pointer-events: none;
+        z-index: 5;
+    }
+
+    .heart {
+        position: absolute;
+        bottom: -60px;
+        animation: floatUp linear infinite;
+        opacity: 0;
+        user-select: none;
+    }
+
+    @keyframes floatUp {
+        0%   { transform: translateY(0)      rotate(0deg)  scale(1);   opacity: 0; }
+        10%  { opacity: 1; }
+        80%  { opacity: 0.9; }
+        100% { transform: translateY(-110vh) rotate(25deg) scale(0.6); opacity: 0; }
     }
 </style>
 </head>
 <body>
 
-<img src="./aichan-aimax.gif" alt="Love Image">
-<h1>love is running... 💘</h1>
-<p>เป็นแฟนกันมั้ยยยยยย 🥹</p>
+<!-- หน้าแรก -->
+<div id="main-page">
+    <img src="./aichan-aimax.gif" alt="Love Image">
+    <h1>love is running... 💘</h1>
+    <p>ความรักที่น้องมีให้พี่ไนซ์ 😊</p>
+    <button id="yes" onclick="yesClick()">เปิดดู 💖</button>
+    <button id="no"  onclick="noClick()">ไม่เปิด 😭</button>
+</div>
 
-<button id="yes" onclick="yesClick()">YES 💖</button>
-<button id="no" onclick="noClick()">NO 😭</button>
+<!-- หน้า yes -->
+<div id="yes-page">
+    <div class="heart-container" id="heartContainer"></div>
+    <img src="./1.png" alt="Love Image">
+    <h1>นี่ไงความรักที่น้องมีให้พี่ไนซ์ 💖</h1>
+</div>
 
 <script>
 let yesSize = 5;
 let noCount = 0;
 
-function yesClick() {
-    document.body.innerHTML = `
-        <img src="./aichan-aimax.gif" alt="Love Image">
-        <h1 style="font-size:8vw;">อั้ม and หลิว </h1>
-        <h2 style="font-size:6vw;">สถานะ: แฟนนนนนนนนนน 💕</h2>
-        <p style="font-size:5vw;">Happy Valentine's Day 💖</p>
-        <button style="padding:20px 40px; font-size:6vw; background-color:#ff4d6d; color:white; border:none; border-radius:30px;" onclick="location.href='./two.html';">รูปหลิว</button>
-    `;
-}
-
 function noClick() {
     const yesBtn = document.getElementById("yes");
     noCount++;
-
     yesSize += 2;
     yesBtn.style.fontSize = yesSize + "vw";
 
     if (noCount >= 5) {
         yesBtn.classList.add("ultimateYes");
         yesBtn.style.position = "fixed";
-        yesBtn.style.top = "0";
-        yesBtn.style.left = "0";
-        yesBtn.style.width = "100vw";
-        yesBtn.style.height = "100vh";
+        yesBtn.style.top      = "0";
+        yesBtn.style.left     = "0";
+        yesBtn.style.width    = "100vw";
+        yesBtn.style.height   = "100vh";
         yesBtn.style.borderRadius = "0";
         yesBtn.style.fontSize = "10vw";
-        yesBtn.innerHTML = "YES 💖 มึงกดเถอะ";
-
+        yesBtn.innerHTML = "เปิดเถอะ! 💖";
         document.getElementById("no").style.display = "none";
     }
+}
+
+function yesClick() {
+    // ซ่อนหน้าแรก แสดงหน้า yes
+    document.getElementById("main-page").style.display = "none";
+    const yesPage = document.getElementById("yes-page");
+    yesPage.style.display = "flex";
+
+    // สร้างหัวใจลอย
+    const emojis = ['❤️','🩷','💕','💖','💗','💓','💝','💞','🥰','😍'];
+    const container = document.getElementById("heartContainer");
+
+    function spawnHeart() {
+        const h = document.createElement("span");
+        h.classList.add("heart");
+        h.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+
+        const size  = 1.2 + Math.random() * 2;
+        const left  = Math.random() * 100;
+        const dur   = 4  + Math.random() * 5;
+        const delay = Math.random() * 3;
+
+        h.style.cssText = `
+            left: ${left}%;
+            font-size: ${size}rem;
+            animation-duration: ${dur}s;
+            animation-delay: ${delay}s;
+        `;
+        container.appendChild(h);
+        setTimeout(() => h.remove(), (dur + delay) * 1000 + 200);
+    }
+
+    // พุ่งออกมา 30 ดวงตอนเริ่ม
+    for (let i = 0; i < 30; i++) {
+        setTimeout(spawnHeart, i * 80);
+    }
+    // ทยอยออกมาต่อเนื่อง
+    setInterval(spawnHeart, 250);
 }
 </script>
 
